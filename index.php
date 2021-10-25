@@ -7,12 +7,15 @@ session_start();
 require_once "config.php";
 require_once "functions.php";
 
-db(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+connectDb();
 
-//$categories = ;
-//$razd       = ;
-//$user       = ;
+$categories = getCategories();
+$section = getSection();
+$user = checkUser();
 
+if ($user) {
+    $addMess = can($user['id_role'], ['ADD_MESS']);
+}
 $action = clearStr($_GET['action']);
 
 if (!$action) {

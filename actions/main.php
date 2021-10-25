@@ -1,3 +1,3 @@
 <?php
 
-$content = render(TEMPLATE . "main.tpl", ["title" => "hello"]);
+$content = render(TEMPLATE . "main", ["title" => "hello"]);

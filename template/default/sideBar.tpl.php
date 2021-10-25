@@ -1,35 +1,20 @@
 <div>
     <h3>Категории</h3>
     <ul class="categories">
-        <strong>
-            <li>Транспорт</li>
-        </strong>
-        <ul>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=5">Автомобили</a></li>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=6">Мото</a></li>
-        </ul>
-        <strong>
-            <li>Интернет</li>
-        </strong>
-        <ul>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=7">Компьютеры</a></li>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=8">Игры</a></li>
-        </ul>
-        <strong>
-            <li>Дом</li>
-        </strong>
-        <ul>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=9">Мебель</a></li>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=10">Сантехника</a></li>
-        </ul>
-        <strong>
-            <li>Сад, огород</li>
-        </strong>
-        <ul>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=11">Интсрумент</a></li>
-            <li>- <a href="http://localhost/doska/?action=categories&amp;id=12">Строй материалы</a></li>
-        </ul>
-
+        <?php if (is_array($categories)) : ?>
+            <?php foreach ($categories as $key => $value) : ?>
+                <?php if ($value['next']) : ?>
+                    <strong>
+                        <li><?= $value[0] ?></li>
+                    </strong>
+                    <ul>
+                    <?php foreach ($value['next'] as $k => $v) : ?>
+                        <li><a href="?action=categories&amp;id=<?= $k ?>"><?= $v ?></a></li>
+                    <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
 </div>
 
@@ -68,7 +53,9 @@
         <input name="id_razd" value="2" type="radio">Спрос
         <br><br>
         Диапазон цен:<br>
-        От <input name="p_min" class="p_search" type="text"> До <input name="p_max" class="p_search" type="text">
+        От <label>
+            <input name="p_min" class="p_search" type="text">
+        </label> До <input name="p_max" class="p_search" type="text">
         <br><br>
         <input value="Поиск" type="submit">
     </form>

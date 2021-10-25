@@ -1,9 +1,16 @@
 <div id="menu">
     <ul>
-        <li><a href="http://localhost/doska/?action=add_mess">Добавить объявление</a></li>
-        <li><a href="http://localhost/doska/?action=p_mess">Ваши объявления</a></li>
-        <li><a href="http://localhost/doska/?action=main&amp;id_r=1">Предложение</a></li>
-        <li><a href="http://localhost/doska/?action=main&amp;id_r=2">Спрос</a></li>
+        <?php if ($user) : ?>
+            <?php if ($addMess) : ?>
+                <li><a href="?action=addMess">Добавить объявление</a></li>
+            <?php endif; ?>
+            <li><a href="?action=pMess">Ваши объявления</a></li>
+        <?php endif; ?>
+        <?php if ($section && is_array($section)) : ?>
+            <?php foreach ($section as $item) : ?>
+                <li><a href="?action=main&amp;id_r=<?= $item['id'] ?>"><?= $item['name'] ?></a></li>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </ul>
-    <div style="clear:both"></div>
+    <div style="clear:both;"></div>
 </div>
