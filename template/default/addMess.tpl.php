@@ -1,35 +1,36 @@
 <h1>Новое объявление</h1>
 <form method='POST' enctype="multipart/form-data">
     Тема:<br>
-    <label>
-        <input type='text' name='title' value="<?= $_SESSION['p']['title'] ?>">
-    </label>
+    <input type='text' name='title' value="<?= $_SESSION['p']['title']; ?>">
     <br>
     Текст:<br>
-    <label>
-        <textarea name="text"><?= $_SESSION['p']['text'] ?></textarea>
-    </label>
+    <textarea name="text"><?= $_SESSION['p']['text']; ?></textarea>
     <br>
     Категории:<br/>
-    <label>
-        <select name="id_categories">
-            <optgroup label="<?= $item['0'] ?>">
-                <option value="">--</option>
-            </optgroup>
-        </select>
-    </label>
+    <select name="id_categories">
+        <?php if ($categories) : ?>
+            <?php foreach ($categories as $key => $item) : ?>
+                <optgroup label="<?= $item[0] ?>">
+                    <?php foreach ($item['next'] as $k => $v) : ?>
+                        <option value="<?= $k ?>">--<?= $v; ?></option>
+                    <?php endforeach; ?>
+                </optgroup>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
     <br/>
 
     Выберите тип объявления:<br/>
-    <label>
-        <input type="radio" name="id_razd" value="">
-    </label>
+    <?php if ($types) : ?>
+        <?php foreach ($types as $item) : ?>
+            <input type="radio" name="id_razd" value="<?= $item['id'] ?>"><?= $item['name'] ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
     <br/>
 
     Город:<br>
-    <label>
-        <input type='text' name='town' value="<?= $_SESSION['p']['town'] ?>">
-    </label>
+    <input type='text' name='town' value="<?= $_SESSION['p']['town']; ?>">
     <br>
 
     Основное изображение:<br>
@@ -41,26 +42,20 @@
     <br/><br/>
 
     Период актуальности объявления:<br/>
-    <label>
-        <select name="time">
-            <option value="10">10 дней</option>
-            <option value="15">15 дней</option>
-            <option value="20">20 дней</option>
-            <option value="30">30 дней</option>
-        </select>
-    </label>
+    <select name="time">
+        <option value="10">10 дней</option>
+        <option value="15">15 дней</option>
+        <option value="20">20 дней</option>
+        <option value="30">30 дней</option>
+    </select>
     <br/>
 
     Цена:<br>
-    <label>
-        <input type='text' name='price' value="<?= $_SESSION['p']['price'] ?>">
-    </label>
+    <input type='text' name='price' value="<?= $_SESSION['p']['price']; ?>">
     <br>
 
     Введите строку:<br>
-    <img src="capcha.php" alt=""><br/><br/><label>
-        <input type='text' name='capcha'>
-    </label>
+    <img src="capcha.php"><br/><br/><input type='text' name='capcha'>
     <br>
 
     <input type='submit' name='reg' value='Добавить'>

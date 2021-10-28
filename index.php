@@ -10,8 +10,8 @@ require_once "functions.php";
 connectDb();
 
 $categories = getCategories();
-$section = getSection();
-$user = checkUser();
+$types      = getTypes();
+$user       = checkUser();
 
 if ($user) {
     $addMess = can($user['id_role'], ['ADD_MESS']);

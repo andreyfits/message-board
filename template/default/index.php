@@ -13,4 +13,3 @@ require_once "menu.tpl.php";
     </div>
 
 <?php require_once "footer.tpl.php"; ?>
-

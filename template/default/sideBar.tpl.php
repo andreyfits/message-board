@@ -8,9 +8,9 @@
                         <li><?= $value[0] ?></li>
                     </strong>
                     <ul>
-                    <?php foreach ($value['next'] as $k => $v) : ?>
-                        <li><a href="?action=categories&amp;id=<?= $k ?>"><?= $v ?></a></li>
-                    <?php endforeach; ?>
+                        <?php foreach ($value['next'] as $k => $v) : ?>
+                            <li><a href="?action=categories&amp;id=<?= $k ?>"><?= $v ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
             <?php endforeach; ?>
@@ -53,9 +53,7 @@
         <input name="id_razd" value="2" type="radio">Спрос
         <br><br>
         Диапазон цен:<br>
-        От <label>
-            <input name="p_min" class="p_search" type="text">
-        </label> До <input name="p_max" class="p_search" type="text">
+        От <input name="p_min" class="p_search" type="text"> До <input name="p_max" class="p_search" type="text">
         <br><br>
         <input value="Поиск" type="submit">
     </form>

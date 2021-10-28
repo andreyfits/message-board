@@ -325,7 +325,7 @@ function getPassword($email)
     return "Пользователя с таким почтовым ящиком нет";
 }
 
-function can($id, $privilegesAdm)
+function can($id, $privilegesAdm): bool
 {
     $privileges = getPrivileges($id);
 
@@ -369,7 +369,7 @@ function getPrivileges($id)
     return $arr;
 }
 
-function getSection()
+function getTypes()
 {
     global $db;
 
@@ -442,5 +442,4 @@ function getCategories()
     }
 
     return $categories;
-
 }

@@ -6,8 +6,8 @@
             <?php endif; ?>
             <li><a href="?action=pMess">Ваши объявления</a></li>
         <?php endif; ?>
-        <?php if ($section && is_array($section)) : ?>
-            <?php foreach ($section as $item) : ?>
+        <?php if ($types && is_array($types)) : ?>
+            <?php foreach ($types as $item) : ?>
                 <li><a href="?action=main&amp;id_r=<?= $item['id'] ?>"><?= $item['name'] ?></a></li>
             <?php endforeach; ?>
         <?php endif; ?>

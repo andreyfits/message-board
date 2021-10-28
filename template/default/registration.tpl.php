@@ -3,29 +3,19 @@
 <?php unset($_SESSION['msg']); ?>
 <form method='POST'>
     Логин<br>
-    <label>
-        <input type='text' name='reg_login' value="<?= $_SESSION['reg']['login'] ?>">
-    </label>
+    <input type='text' name='reg_login' value="<?= $_SESSION['reg']['login'] ?>">
     <br>
     Пароль<br>
-    <label>
-        <input type='password' name='reg_password'>
-    </label>
+    <input type='password' name='reg_password'>
     <br>
     Подтвердите пароль<br>
-    <label>
-        <input type='password' name='reg_password_confirm'>
-    </label>
+    <input type='password' name='reg_password_confirm'>
     <br>
     Почта<br>
-    <label>
-        <input type='text' name='reg_email' value="<?= $_SESSION['reg']['email'] ?>">
-    </label>
+    <input type='text' name='reg_email' value="<?= $_SESSION['reg']['email'] ?>">
     <br>
     Имя<br>
-    <label>
-        <input type='text' name='reg_name' value="<?= $_SESSION['reg']['name'] ?>">
-    </label>
+    <input type='text' name='reg_name' value="<?= $_SESSION['reg']['name'] ?>">
     <br>
     <input style="float:left;" type='submit' name='reg' value='Регистрация'>
 </form>
