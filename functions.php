@@ -533,3 +533,244 @@ function generateStr(): string
 
     return $strG;
 }
+
+function addMess($post, $userId)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $title        = clearStr($post['title']);
+    $text         = $post['text'];
+    $idCategories = (int)($post['id_categories']);
+    $idType       = (int)($post['id_razd']);
+    $price        = (int)($post['price']);
+    $town         = clearStr($post['town']);
+    $date         = time();
+    $aTime        = (int)($post['time']);
+    $timeOver     = $date + ($aTime * (60 * 60 * 24));
+
+    $msg = '';
+
+    if(empty($_SESSION['strCap']) || $_SESSION['strCap'] !== $post['capcha']) {
+        $_SESSION['p']['title'] = $title;
+        $_SESSION['p']['text']  = $text;
+        $_SESSION['p']['town']  = $town;
+        $_SESSION['p']['price'] = $price;
+
+        return "WRONG captcha";
+    }
+
+    unset($_SESSION['strCap']);
+
+    if(empty($title)) {
+        $msg .= "Введите заголовок";
+    }
+
+    if(empty($text)) {
+        $msg .= "Введите текст";
+    }
+
+    if(empty($town)) {
+        $msg .= "Введите город";
+    }
+
+    if(empty($price)) {
+        $msg .= "Введите цену";
+    }
+
+    if(!empty($msg)) {
+        $_SESSION['p']['title'] = $title;
+        $_SESSION['p']['text']  = $text;
+        $_SESSION['p']['town']  = $town;
+        $_SESSION['p']['price'] = $price;
+
+        return $msg;
+    }
+
+    $imgTypes = [
+        'jpeg'=>"image/jpeg",
+        "pjpeg"=>"image/pjpeg",
+        'png' => "image/png",
+        'x-png' => "image/x-png",
+        'gif' => "image/gif",
+    ];
+
+    if(!empty($_FILES['img']['tmp_name'])) {
+
+        if(!empty($_FILES['img']['error'])) {
+            $_SESSION['p']['title'] = $title;
+            $_SESSION['p']['text']  = $text;
+            $_SESSION['p']['town']  = $town;
+            $_SESSION['p']['price'] = $price;
+
+            return "Error upload image";
+        }
+
+        $typeImg = array_search($_FILES['img']['type'], $imgTypes, true);
+
+        if(!$typeImg) {
+            $_SESSION['p']['title'] = $title;
+            $_SESSION['p']['text']  = $text;
+            $_SESSION['p']['town']  = $town;
+            $_SESSION['p']['price'] = $price;
+
+            return "Wrong type image";
+        }
+
+        if($_FILES['img']['size'] > IMG_SIZE) {
+            $_SESSION['p']['title'] = $title;
+            $_SESSION['p']['text']  = $text;
+            $_SESSION['p']['town']  = $town;
+            $_SESSION['p']['price'] = $price;
+
+            return "Very big image";
+        }
+
+        if (!move_uploaded_file($_FILES['img']['tmp_name'], FILES . $_FILES['img']['name'])) {
+            $_SESSION['p']['title'] = $title;
+            $_SESSION['p']['text']  = $text;
+            $_SESSION['p']['town']  = $town;
+            $_SESSION['p']['price'] = $price;
+
+            return "Error copy image";
+        }
+
+/*        if (!imgResize($_FILES['img']['name'], $typeImg)) {
+            $_SESSION['p']['title'] = $title;
+            $_SESSION['p']['text']  = $text;
+            $_SESSION['p']['town']  = $town;
+            $_SESSION['p']['price'] = $price;
+
+            return "Error to resize image";
+        }*/
+
+        $img = $_FILES['img']['name'];
+
+        $query = "
+            INSERT INTO " . PREF . "post(
+                title,
+                text,
+                img,
+                date,
+                id_user,
+                id_categories,
+                id_razd,
+                town,
+                time_over,
+                price
+            )
+                VALUES (
+                    '$title',
+                    '$text',
+                    '$img',
+                    '$date',
+                    '$userId',
+                    '$idCategories',
+                    '$idType',
+                    '$town',
+                    '$timeOver',
+                    '$price'
+                )
+        ";
+
+        $result = mysqli_query($db, $query);
+
+        if(!$result) {
+            $_SESSION['p']['title'] = $title;
+            $_SESSION['p']['text']  = $text;
+            $_SESSION['p']['town']  = $town;
+            $_SESSION['p']['price'] = $price;
+
+            return mysqli_error($db);
+        }
+
+    }
+
+    if(!empty($_FILES['mini'])) {
+        $idMess = mysqli_insert_id($db);
+
+        $imgS = "";
+
+        for($i = 0; $i < count($_FILES['mini']['tmp_name']); $i++) {
+            if(empty($_FILES['mini']['tmp_name'][$i])) {
+                continue;
+            }
+
+            if(!empty($_FILES['mini']['error'][$i])) {
+                $_SESSION['p']['title'] = $title;
+                $_SESSION['p']['text']  = $text;
+                $_SESSION['p']['town']  = $town;
+                $_SESSION['p']['price'] = $price;
+
+                $msg .= "Error upload image";
+                continue;
+            }
+
+            $typeImg = array_search($_FILES['mini']['type'][$i], $imgTypes, true);
+
+            if(!$typeImg) {
+                $_SESSION['p']['title'] = $title;
+                $_SESSION['p']['text']  = $text;
+                $_SESSION['p']['town']  = $town;
+                $_SESSION['p']['price'] = $price;
+
+                $msg .= "Wrong type image";
+                continue;
+            }
+
+            if ($_FILES['mini']['size'][$i] > (2 * 1024 * 1024)) {
+                $_SESSION['p']['title'] = $title;
+                $_SESSION['p']['text']  = $text;
+                $_SESSION['p']['town']  = $town;
+                $_SESSION['p']['price'] = $price;
+
+                $msg .= "Very big image";
+                continue;
+            }
+
+            $nameImg = $idMess . "_" . $i;
+            $rash    = substr($_FILES['mini']['name'][$i], strripos($_FILES['mini']['name'][$i], "."));
+            $nameImg .= $rash;
+
+            if (!move_uploaded_file($_FILES['mini']['tmp_name'][$i], FILES . $nameImg)) {
+                $_SESSION['p']['title'] = $title;
+                $_SESSION['p']['text']  = $text;
+                $_SESSION['p']['town']  = $town;
+                $_SESSION['p']['price'] = $price;
+
+                $msg .= "Error copy image";
+                continue;
+            }
+
+
+/*            if (!imgResize($nameImg, $typeImg)) {
+                $_SESSION['p']['title'] = $title;
+                $_SESSION['p']['text']  = $text;
+                $_SESSION['p']['town']  = $town;
+                $_SESSION['p']['price'] = $price;
+
+                return "Error to resize image";
+            }*/
+
+            $imgS .= $nameImg . "|";
+        }
+        $imgS = rtrim($imgS, "|");
+
+        $query = "UPDATE " . PREF . "post SET img_s = '$imgS' WHERE id = '$idMess'";
+
+        $result2 = mysqli_query($db, $query);
+
+        if(mysqli_affected_rows($db)) {
+            if(!empty($msg)) {
+                return $msg;
+            }
+            return true;
+        }
+    }
+    else {
+        return true;
+    }
+}

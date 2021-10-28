@@ -1,10 +1,10 @@
 <h1>Новое объявление</h1>
 <form method='POST' enctype="multipart/form-data">
     Тема:<br>
-    <input type='text' name='title' value="<?= $_SESSION['p']['title']; ?>">
+    <input type='text' name='title' value="<?= $_SESSION['p']['title'] ?>">
     <br>
     Текст:<br>
-    <textarea name="text"><?= $_SESSION['p']['text']; ?></textarea>
+    <textarea name="text"><?= $_SESSION['p']['text'] ?></textarea>
     <br>
     Категории:<br/>
     <select name="id_categories">
@@ -30,7 +30,7 @@
     <br/>
 
     Город:<br>
-    <input type='text' name='town' value="<?= $_SESSION['p']['town']; ?>">
+    <input type='text' name='town' value="<?= $_SESSION['p']['town'] ?>">
     <br>
 
     Основное изображение:<br>
@@ -51,7 +51,7 @@
     <br/>
 
     Цена:<br>
-    <input type='text' name='price' value="<?= $_SESSION['p']['price']; ?>">
+    <input type='text' name='price' value="<?= $_SESSION['p']['price'] ?>">
     <br>
 
     Введите строку:<br>

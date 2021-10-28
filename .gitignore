@@ -3,6 +3,7 @@
 ~*
 
 .idea/
+files/
 
 # ignore compiled files
 *.com

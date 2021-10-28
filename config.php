@@ -9,8 +9,9 @@ const PREF        = 'mes_';
 const SITE_NAME = 'http://localhost:4000';
 const TEMPLATE  = 'template/default/';
 const ACTIONS   = 'actions/';
-const FILES     = 'files/mini/';
+const FILES     = 'files/';
 const IMG_WIDTH = '200';
+const IMG_SIZE  = (2 * 1024 * 1024);
 
 const PER_PAGE = '2';
 
