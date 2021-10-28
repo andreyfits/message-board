@@ -443,3 +443,93 @@ function getCategories()
 
     return $categories;
 }
+
+function getImg()
+{
+    $width = 160;
+    $height = 80;
+
+    $r = random_int(133, 255);
+    $g = random_int(133, 255);
+    $b = random_int(133, 255);
+
+    $im = imagecreatetruecolor($width, $height);
+
+    $background = imagecolorallocate($im, $r, $g, $b);
+
+    imagefilledrectangle($im, 0, 0, $width, $height, $background);
+
+    $black = imagecolorallocate($im, 7, 7, 7);
+
+    for ($h = random_int(1, 10); $h < $height; $h += random_int(1, 10)) {
+        for ($v = random_int(1, 30); $v < $width; $v += random_int(1, 30)) {
+            imagesetpixel($im, $v, $h, $black);
+        }
+    }
+
+    $str                = generateStr();
+    $_SESSION['strCap'] = $str;
+
+    $fontsP = "fonts/";
+
+    $d = opendir($fontsP);
+
+    while (false !== ($file = readdir($d))) {
+        if ($file === "." || $file === "..") {
+            continue;
+        }
+        $fonts[] = $file;
+    }
+
+    $x     = 20;
+    $color = imagecolorallocate($im, 7, 7, 7);
+
+    for ($i = 0; $i < strlen($str); $i++) {
+        $n    = random_int(0, count($fonts) - 1);
+        $font = $fontsP . $fonts[$n];
+
+        $size  = random_int(15, 35);
+        $angle = random_int(-30, 30);
+        $y     = random_int(40, 45);
+
+        imagettftext($im, $size, $angle, $x, $y, $color, $font, $str[$i]);
+        $x = $x + $size - 5;
+    }
+
+    for ($c = 0; $c < 5; $c++) {
+        $x1 = random_int(0, (int)($width * 0.1));
+        $x2 = random_int((int)($width * 0.8), $width);
+
+        $y1 = random_int(0, (int)($height * 0.6));
+        $y2 = random_int((int)($width * 0.3), $height);
+
+        imageline($im, $x1, $y1, $x2, $y2, $black);
+    }
+
+    header("Content-Type: image/png");
+    imagepng($im);
+    imagedestroy($im);
+}
+
+function generateStr(): string
+{
+    $str       = "23456789abcdegikpqsvxyz";
+    $strLength = strlen($str) - 1;
+
+    $strG = "";
+
+    for ($i = 0; $i < 5; $i++) {
+
+        $x = random_int(0, $strLength);
+
+        if (($i !== 0) && $strG[strlen($strG) - 1] === $str[$x]) {
+            $i--;
+            continue;
+        }
+
+        $strG .= $str[$x];
+
+    }
+
+    return $strG;
+}
