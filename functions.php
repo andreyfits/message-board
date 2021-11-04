@@ -566,19 +566,19 @@ function addMess($post, $userId)
     unset($_SESSION['strCap']);
 
     if(empty($title)) {
-        $msg .= "Введите заголовок";
+        $msg .= "Input Title" . "<br>";
     }
 
     if(empty($text)) {
-        $msg .= "Введите текст";
+        $msg .= "Input Text" . "<br>";
     }
 
     if(empty($town)) {
-        $msg .= "Введите город";
+        $msg .= "Input town" . "<br>";
     }
 
     if(empty($price)) {
-        $msg .= "Введите цену";
+        $msg .= "Input price" . "<br>";
     }
 
     if(!empty($msg)) {
@@ -606,7 +606,7 @@ function addMess($post, $userId)
             $_SESSION['p']['town']  = $town;
             $_SESSION['p']['price'] = $price;
 
-            return "Error upload image";
+            return "Error upload image" . "<br>";
         }
 
         $typeImg = array_search($_FILES['img']['type'], $imgTypes, true);
@@ -617,16 +617,16 @@ function addMess($post, $userId)
             $_SESSION['p']['town']  = $town;
             $_SESSION['p']['price'] = $price;
 
-            return "Wrong type image";
+            return "Wrong type image" . "<br>";
         }
 
-        if($_FILES['img']['size'] > IMG_SIZE) {
+        if ($_FILES['img']['size'] > IMG_SIZE) {
             $_SESSION['p']['title'] = $title;
             $_SESSION['p']['text']  = $text;
             $_SESSION['p']['town']  = $town;
             $_SESSION['p']['price'] = $price;
 
-            return "Very big image";
+            return "Very big image" . "<br>";
         }
 
         if (!move_uploaded_file($_FILES['img']['tmp_name'], FILES . $_FILES['img']['name'])) {
@@ -635,17 +635,17 @@ function addMess($post, $userId)
             $_SESSION['p']['town']  = $town;
             $_SESSION['p']['price'] = $price;
 
-            return "Error copy image";
+            return "Error copy image" . "<br>";
         }
 
-/*        if (!imgResize($_FILES['img']['name'], $typeImg)) {
+        if (!imgResize($_FILES['img']['name'], $typeImg)) {
             $_SESSION['p']['title'] = $title;
             $_SESSION['p']['text']  = $text;
             $_SESSION['p']['town']  = $town;
             $_SESSION['p']['price'] = $price;
 
             return "Error to resize image";
-        }*/
+        }
 
         $img = $_FILES['img']['name'];
 
@@ -686,7 +686,13 @@ function addMess($post, $userId)
 
             return mysqli_error($db);
         }
+    } else {
+        $_SESSION['p']['title'] = $title;
+        $_SESSION['p']['text']  = $text;
+        $_SESSION['p']['town']  = $town;
+        $_SESSION['p']['price'] = $price;
 
+        return "Add image";
     }
 
     if(!empty($_FILES['mini'])) {
@@ -705,7 +711,7 @@ function addMess($post, $userId)
                 $_SESSION['p']['town']  = $town;
                 $_SESSION['p']['price'] = $price;
 
-                $msg .= "Error upload image";
+                $msg .= "Error upload image" . "<br>";
                 continue;
             }
 
@@ -717,17 +723,17 @@ function addMess($post, $userId)
                 $_SESSION['p']['town']  = $town;
                 $_SESSION['p']['price'] = $price;
 
-                $msg .= "Wrong type image";
+                $msg .= "Wrong type image" . "<br>";
                 continue;
             }
 
-            if ($_FILES['mini']['size'][$i] > (2 * 1024 * 1024)) {
+            if ($_FILES['mini']['size'][$i] > IMG_SIZE) {
                 $_SESSION['p']['title'] = $title;
                 $_SESSION['p']['text']  = $text;
                 $_SESSION['p']['town']  = $town;
                 $_SESSION['p']['price'] = $price;
 
-                $msg .= "Very big image";
+                $msg .= "Very big image" . "<br>";
                 continue;
             }
 
@@ -741,19 +747,19 @@ function addMess($post, $userId)
                 $_SESSION['p']['town']  = $town;
                 $_SESSION['p']['price'] = $price;
 
-                $msg .= "Error copy image";
+                $msg .= "Error copy image" . "<br>";
                 continue;
             }
 
 
-/*            if (!imgResize($nameImg, $typeImg)) {
+            if (!imgResize($nameImg, $typeImg)) {
                 $_SESSION['p']['title'] = $title;
                 $_SESSION['p']['text']  = $text;
                 $_SESSION['p']['town']  = $town;
                 $_SESSION['p']['price'] = $price;
 
-                return "Error to resize image";
-            }*/
+                return "Error to resize image" . "<br>";
+            }
 
             $imgS .= $nameImg . "|";
         }
@@ -772,5 +778,56 @@ function addMess($post, $userId)
     }
     else {
         return true;
+    }
+}
+
+function imgResize($fileName, $type)
+{
+    switch ($type) {
+        case 'jpeg':
+        case 'pjpeg':
+            $imgId = imagecreatefromjpeg(FILES . $fileName);
+            break;
+        case 'png':
+        case 'x-png':
+            $imgId = imagecreatefrompng(FILES . $fileName);
+            break;
+        case 'gif':
+            $imgId = imagecreatefromgif(FILES . $fileName);
+            break;
+    }
+
+    $imgWidth  = imageSX($imgId);
+    $imgHeight = imageSY($imgId);
+
+    $k = round($imgWidth / IMG_WIDTH, 2);
+
+    $imgMiniWidth  = round($imgWidth / $k);
+    $imgMiniHeight = round($imgHeight / $k);
+
+    $imgDestId = imagecreatetruecolor($imgMiniWidth, $imgMiniHeight);
+
+    $result = imagecopyresampled(
+        $imgDestId,
+        $imgId,
+        0,
+        0,
+        0,
+        0,
+        $imgMiniWidth,
+        $imgMiniHeight,
+        $imgWidth,
+        $imgHeight
+    );
+
+    $img = imagejpeg($imgDestId, MINI . $fileName, 100);
+
+    imagedestroy($imgId);
+    imagedestroy($imgDestId);
+
+    if ($img) {
+        return true;
+    } else {
+        return false;
     }
 }

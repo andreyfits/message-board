@@ -12,7 +12,7 @@
             <?php foreach ($categories as $key => $item) : ?>
                 <optgroup label="<?= $item[0] ?>">
                     <?php foreach ($item['next'] as $k => $v) : ?>
-                        <option value="<?= $k ?>">--<?= $v; ?></option>
+                        <option value="<?= $k ?>">--<?= $v ?></option>
                     <?php endforeach; ?>
                 </optgroup>
             <?php endforeach; ?>
@@ -23,7 +23,9 @@
     Выберите тип объявления:<br/>
     <?php if ($types) : ?>
         <?php foreach ($types as $item) : ?>
-            <input type="radio" name="id_razd" value="<?= $item['id'] ?>"><?= $item['name'] ?>
+            <label>
+                <input type="radio" name="id_razd" value="<?= $item['id'] ?>"><?= $item['name'] ?>
+            </label>
         <?php endforeach; ?>
     <?php endif; ?>
 
@@ -55,7 +57,7 @@
     <br>
 
     Введите строку:<br>
-    <img src="capcha.php"><br/><br/><input type='text' name='capcha'>
+    <img src="capcha.php" alt="captcha"><br/><br/><input type='text' name='capcha'>
     <br>
 
     <input type='submit' name='reg' value='Добавить'>

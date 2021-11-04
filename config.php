@@ -10,6 +10,7 @@ const SITE_NAME = 'http://localhost:4000';
 const TEMPLATE  = 'template/default/';
 const ACTIONS   = 'actions/';
 const FILES     = 'files/';
+const MINI      = 'files/mini/';
 const IMG_WIDTH = '200';
 const IMG_SIZE  = (2 * 1024 * 1024);
 
