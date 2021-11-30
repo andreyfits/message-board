@@ -831,3 +831,55 @@ function imgResize($fileName, $type)
         return false;
     }
 }
+
+function getPMess($user)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $query = "
+        SELECT 
+            " . PREF . "post.id,
+            " . PREF . "post.title,
+            img,
+            text,
+            date,
+            town,
+            price,
+            " . PREF . "post.confirm,
+            is_actual,
+            time_over,
+            " . PREF . "users.name AS uname,
+            " . PREF . "users.email,
+            " . PREF . "categories.name AS cat,
+            " . PREF . "razd.name AS razd
+        FROM " . PREF . "post
+        LEFT JOIN " . PREF . "users ON " . PREF . "users.user_id = '$user'
+        LEFT JOIN " . PREF . "categories ON " . PREF . "categories.id = " . PREF . "post.id_categories
+        LEFT JOIN " . PREF . "razd ON " . PREF . "razd.id = " . PREF . "post.id_razd
+        WHERE " . PREF . "post.id_user = '$user'
+        ORDER BY date DESC
+    ";
+
+    $result = mysqli_query($db, $query);
+
+    return getResult($result);
+}
+
+function smallText($text) {
+    $row = [];
+
+    foreach($text as $value) {
+        if(strlen($value['text']) > 700) {
+            $value['text'] = substr($value['text'],0,700);
+            $value['text'] = substr($value['text'],0,strrpos($value['text']," "))."...";
+        }
+
+        $row[] = $value;
+    }
+
+    return $row;
+}
