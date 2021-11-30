@@ -883,3 +883,41 @@ function smallText($text) {
 
     return $row;
 }
+
+function getVMess($id)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $query = "
+        SELECT 
+            " . PREF . "post.id,
+            " . PREF . "post.title,
+            img,
+            text,
+            date,
+            town,
+            price,
+            img_s,
+            " . PREF . "post.confirm,
+            is_actual,
+            time_over,
+            " . PREF . "users.name AS uname,
+            " . PREF . "users.email,
+            " . PREF . "categories.name AS cat,
+            " . PREF . "razd.name AS razd
+        FROM " . PREF . "post
+        LEFT JOIN " . PREF . "users ON " . PREF . "users.user_id = " .PREF . "post.id_user
+        LEFT JOIN " . PREF . "categories ON " . PREF . "categories.id = " . PREF . "post.id_categories
+        LEFT JOIN " . PREF . "razd ON " . PREF . "razd.id = " . PREF . "post.id_razd
+        WHERE " . PREF . "post.id = '$id'
+    ";
+
+    $result = mysqli_query($db, $query);
+    $row    = getResult($result);
+
+    return $row[0];
+}

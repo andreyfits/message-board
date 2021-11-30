@@ -4,7 +4,7 @@
     <?php unset($_SESSION['msg']); ?>
 <?php endif; ?>
 <div class="t_mess">
-    <h4 class="title_p_mess"><a href="?action=view_mess&amp;id=8">dffdfdgdfg dfg dfgdfgdfgdf g</a></h4>
+    <h4 class="title_p_mess"><a href="?action=viewMess&amp;id=8">dffdfdgdfg dfg dfgdfgdfgdf g</a></h4>
     <p class="p_mess_cat">
         <strong>Категория:</strong> Автомобили |
         <strong>Тип объявления:</strong> Предложение |
@@ -28,7 +28,7 @@
         Этот урок будет состоять из двух частей... </p>
 </div>
 <div class="t_mess">
-    <h4 class="title_p_mess"><a href="?action=view_mess&amp;id=7">sdfsdf</a></h4>
+    <h4 class="title_p_mess"><a href="?action=viewMess&amp;id=7">sdfsdf</a></h4>
     <p class="p_mess_cat">
         <strong>Категория:</strong> Автомобили |
         <strong>Тип объявления:</strong> Предложение |

@@ -6,7 +6,7 @@
 <?php if ($text) : ?>
     <?php foreach ($text as $item) : ?>
         <div class="t_mess">
-            <h4 class="title_p_mess"><a href="?action=view_mess&amp;id=<?= $item['id'] ?>"><?= $item['title'] ?></a>
+            <h4 class="title_p_mess"><a href="?action=viewMess&amp;id=<?= $item['id'] ?>"><?= $item['title'] ?></a>
             </h4>
             <?php if ($item['confirm'] == 0) : ?>
                 <p class="not_confirm"><strong>Еще не подтверждено модератором</strong></p>
@@ -22,10 +22,10 @@
                 <strong>Дата добавления объявления:</strong> <?= date("d.m.Y", $item['date']) ?> |
                 <strong>Цена:</strong> <?= $item['price'] ?> |
                 <strong>Автор</strong> <a href="mailto:<?= $item['email'] ?>"><?= $item['uname'] ?></a>
-
             </p>
-            <p><img class="mini_mess" src="<?= SITE_NAME . "/" . MINI . $item['img'] ?>" alt=""><?= nl2br($item['text'])
-                ?></p>
+            <p>
+                <img class="mini_mess" src="<?= SITE_NAME . "/" . MINI . $item['img'] ?>" alt=""><?= nl2br($item['text']) ?>
+            </p>
 
             <form method="post">
                 Период актуальности объявления:<br/>
