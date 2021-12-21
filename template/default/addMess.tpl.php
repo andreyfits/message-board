@@ -62,3 +62,4 @@
 
     <input type='submit' name='reg' value='Добавить'>
 </form>
+<?php unset($_SESSION['p'])?>

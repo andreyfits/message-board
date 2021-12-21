@@ -24,11 +24,13 @@
                 <strong>Автор</strong> <a href="mailto:<?= $item['email'] ?>"><?= $item['uname'] ?></a>
             </p>
             <p>
-                <img class="mini_mess" src="<?= SITE_NAME . "/" . MINI . $item['img'] ?>" alt=""><?= nl2br($item['text']) ?>
+                <img class="mini_mess"
+                     src="<?= SITE_NAME . "/" . MINI . $item['img'] ?>"
+                     alt=""><?= nl2br($item['text']) ?>
             </p>
 
             <form method="post">
-                Период актуальности объявления:<br/>
+                Период актуальности объявления:
                 <select name="time">
                     <option value="10">10 дней</option>
                     <option value="15">15 дней</option>

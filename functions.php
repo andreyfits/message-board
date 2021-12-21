@@ -252,7 +252,7 @@ function checkUser()
         $queryUpdate = sprintf($queryUpdate, mysqli_real_escape_string($db,$login));
 
         if (!mysqli_query($db,$queryUpdate)) {
-            return "Ошибка авторизации пользователя";
+            return false;
         }
 
         $_SESSION['sess'] = $sess;
@@ -542,14 +542,14 @@ function addMess($post, $userId)
         $db = connectDb();
     }
 
-    $title        = clearStr($post['title']);
-    $text         = $post['text'];
-    $idCategories = (int)($post['id_categories']);
-    $idType       = (int)($post['id_razd']);
-    $price        = (int)($post['price']);
-    $town         = clearStr($post['town']);
+    $title        = mysqli_real_escape_string($db, clearStr($post['title']));
+    $text         = mysqli_real_escape_string($db, $post['text']);
+    $idCategories = (int)$post['id_categories'];
+    $idRazd       = (int)$post['id_razd'];
+    $price        = (int)$post['price'];
+    $town         = mysqli_real_escape_string($db, clearStr($post['town']));
     $date         = time();
-    $aTime        = (int)($post['time']);
+    $aTime        = (int)$post['time'];
     $timeOver     = $date + ($aTime * (60 * 60 * 24));
 
     $msg = '';
@@ -591,11 +591,11 @@ function addMess($post, $userId)
     }
 
     $imgTypes = [
-        'jpeg'=>"image/jpeg",
-        "pjpeg"=>"image/pjpeg",
-        'png' => "image/png",
+        'jpeg'  => "image/jpeg",
+        "pjpeg" => "image/pjpeg",
+        'png'   => "image/png",
         'x-png' => "image/x-png",
-        'gif' => "image/gif",
+        'gif'   => "image/gif",
     ];
 
     if(!empty($_FILES['img']['tmp_name'])) {
@@ -669,7 +669,7 @@ function addMess($post, $userId)
                     '$date',
                     '$userId',
                     '$idCategories',
-                    '$idType',
+                    '$idRazd',
                     '$town',
                     '$timeOver',
                     '$price'
@@ -920,4 +920,238 @@ function getVMess($id)
     $row    = getResult($result);
 
     return $row[0];
+}
+
+function checkYouMess($userId, $idMess)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $query = "SELECT id_user FROM " . PREF . "post WHERE id='$idMess'";
+
+    $result = mysqli_query($db, $query);
+    $row    = getResult($result);
+
+    return $row[0]['id_user'] === $userId;
+}
+
+function getEMess($idMess)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $query = "
+        SELECT 
+           id,
+           title,
+           text,
+           date,
+           id_user,
+           id_categories,
+           id_razd,
+           town,
+           img,
+           time_over,
+           is_actual,
+           price,
+           img_s 
+        FROM " . PREF . "post WHERE id='$idMess'";
+
+    $result = mysqli_query($db, $query);
+    $row    = getResult($result);
+
+    return $row[0];
+}
+
+function editMess($post, $userId)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $id           = (int)$post['id'];
+    $title        = mysqli_real_escape_string($db, clearStr($post['title']));
+    $text         = mysqli_real_escape_string($db, $post['text']);
+    $idCategories = (int)$post['id_categories'];
+    $idRazd       = (int)$post['id_razd'];
+    $price        = (int)$post['price'];
+    $town         = mysqli_real_escape_string($db, clearStr($post['town']));
+    $date         = time();
+    $aTime        = (int)$post['time'];
+    $timeOver     = $date + ($aTime * (60 * 60 * 24));
+
+    $msg = '';
+
+    if(empty($_SESSION['strCap']) || $_SESSION['strCap'] !== $post['capcha']) {
+        return "WRONG captcha";
+    }
+
+    if(empty($title)) {
+        $msg .= "Input Title" . "<br>";
+    }
+
+    if(empty($text)) {
+        $msg .= "Input Text" . "<br>";
+    }
+
+    if(empty($town)) {
+        $msg .= "Input town" . "<br>";
+    }
+
+    if(empty($price)) {
+        $msg .= "Input price" . "<br>";
+    }
+
+    if(!empty($msg)) {
+        return $msg;
+    }
+
+    $query = "
+        UPDATE " . PREF . "post SET
+            title         = '$title',
+            text          = '$text',
+            date          = '$date',
+            id_user       = '$userId',
+            id_categories = '$idCategories',
+            id_razd       = '$idRazd',
+            town          = '$town',
+            time_over     = '$timeOver',
+            price         = '$price',
+            confirm       = '0',
+            is_actual     = '1'
+        WHERE id='$id'
+    ";
+
+    $result = mysqli_query($db, $query);
+
+    if (!$result) {
+        exit(mysqli_error($db));
+    }
+
+    if (mysqli_affected_rows($db) < 1) {
+        $msg = "Данные не обновлены";
+    }
+
+    $imgTypes = [
+        'jpeg'  => "image/jpeg",
+        "pjpeg" => "image/pjpeg",
+        'png'   => "image/png",
+        'x-png' => "image/x-png",
+        'gif'   => "image/gif",
+    ];
+
+    if(!empty($_FILES['img']['tmp_name'])) {
+
+        if(!empty($_FILES['img']['error'])) {
+            return "Error upload image" . "<br>";
+        }
+
+        $typeImg = array_search($_FILES['img']['type'], $imgTypes, true);
+
+        if(!$typeImg) {
+            return "Wrong type image" . "<br>";
+        }
+
+        if ($_FILES['img']['size'] > IMG_SIZE) {
+            return "Very big image" . "<br>";
+        }
+
+        if (!move_uploaded_file($_FILES['img']['tmp_name'], FILES . $_FILES['img']['name'])) {
+            return "Error copy image" . "<br>";
+        }
+
+        if (!imgResize($_FILES['img']['name'], $typeImg)) {
+            return "Error to resize image";
+        }
+
+        $img = $_FILES['img']['name'];
+
+        $query2 = "UPDATE " . PREF . "post SET img = '$img' WHERE id = '$id'";
+
+        $result2 = mysqli_query($db, $query2);
+
+        if(!$result2) {
+            return exit(mysqli_error($db));
+        }
+
+        if (mysqli_affected_rows($db) < 1) {
+            $msg = "Данные не обновлены";
+        }
+    }
+
+    if(!empty($_FILES['mini'])) {
+        $idMess = mysqli_insert_id($db);
+
+        $imgS = "";
+
+        for ($i = 0; $i < count($_FILES['mini']['tmp_name']); $i++) {
+            if (empty($_FILES['mini']['tmp_name'][$i])) {
+                continue;
+            }
+
+            if (!empty($_FILES['mini']['error'][$i])) {
+                $msg .= "Error upload image" . "<br>";
+                continue;
+            }
+
+            $typeImg = array_search($_FILES['mini']['type'][$i], $imgTypes, true);
+
+            if (!$typeImg) {
+                $msg .= "Wrong type image" . "<br>";
+                continue;
+            }
+
+            if ($_FILES['mini']['size'][$i] > IMG_SIZE) {
+                $msg .= "Very big image" . "<br>";
+                continue;
+            }
+
+            $nameImg = $idMess . "_" . $i;
+            $rash    = substr($_FILES['mini']['name'][$i], strripos($_FILES['mini']['name'][$i], "."));
+            $nameImg .= $rash;
+
+            if (!move_uploaded_file($_FILES['mini']['tmp_name'][$i], FILES . $nameImg)) {
+                $msg .= "Error copy image" . "<br>";
+                continue;
+            }
+
+            if (!imgResize($nameImg, $typeImg)) {
+                return "Error to resize image" . "<br>";
+            }
+
+            $imgS .= $nameImg . "|";
+        }
+
+        if (!empty($imgS)) {
+            $imgS = rtrim($imgS, "|");
+
+            $query3 = "UPDATE " . PREF . "post SET img_s = '$imgS' WHERE id = '$id'";
+
+            $result3 = mysqli_query($db, $query3);
+
+            if (!$result3) {
+                return exit(mysqli_error($db));
+            }
+
+            if (mysqli_affected_rows($db) < 1) {
+                $msg = "Не обновлены дополнительные изображения";
+            } else {
+                return true;
+            }
+        }
+    }
+
+    if (!$msg) {
+        return true;
+    } else {
+        return $msg;
+    }
 }
