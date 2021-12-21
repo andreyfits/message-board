@@ -37,7 +37,7 @@
                     <option value="20">20 дней</option>
                     <option value="30">30 дней</option>
                 </select>
-                <input type="hidden" value="<?= $item['id'] ?>">
+                <input type="hidden" name="id" value="<?= $item['id'] ?>">
                 <input type="submit" value="Ok">
                 &nbsp;|&nbsp;<a href="?action=editMess&amp;id=<?= $item['id'] ?>">Изменить</a>
                 &nbsp;|&nbsp;<a href="?action=pMess&amp;delete=<?= $item['id'] ?>">Удалить</a>

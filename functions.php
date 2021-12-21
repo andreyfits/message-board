@@ -1174,3 +1174,29 @@ function deleteMess($idMess)
         return mysqli_error($db);
     }
 }
+
+function updateActualTime($idMess, $actualTime)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $time = time();
+    $timeOver = $time + $actualTime * (60 * 60 * 24);
+
+    $query = "UPDATE " . PREF . "post SET time_over='$timeOver', is_actual='1' WHERE id='$idMess'";
+
+    $result = mysqli_query($db, $query);
+
+    if (!$result) {
+        return mysqli_error($db);
+    }
+
+    if (mysqli_affected_rows($db) < 1) {
+        return "Not updated";
+    }
+
+    return true;
+}
