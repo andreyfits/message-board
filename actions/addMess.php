@@ -1,7 +1,7 @@
 <?php
 
 if (!$user || !can($user['id_role'], ['ADD_MESS'])) {
-    $text    = "Доступ запрещен";
+    $text    = "Access denied";
     $content = render(TEMPLATE . "error", ["text" => $text]);
 } else {
     if($_POST) {

@@ -1,7 +1,7 @@
 <?php
 
 if (!$user) {
-    $text    = "Доступ запрещен";
+    $text    = "Access denied";
     $content = render(TEMPLATE . "error", ["text" => $text]);
 } elseif ($_GET['id']) {
     $idMess = (int)$_GET['id'];
@@ -11,7 +11,7 @@ if (!$user) {
             $msg = editMess($_POST, $user['user_id']);
 
             if ($msg === true) {
-                $_SESSION['msg'] = "Успешно изменено. Ожидает проверки модератора.";
+                $_SESSION['msg'] = "Successfully changed. Awaiting moderator review.";
 
                 header("Location:?action=pMess");
             }
@@ -25,7 +25,7 @@ if (!$user) {
         $text = getEMess($idMess);
 
         if ($text['is_actual'] == 0) {
-            $actual = "Не актуально";
+            $actual = "Not actual";
         } else {
             $dayLeft   = round(($text['time_over'] - time()) / (60 * 60 * 24));
             $endNumber = substr($dayLeft, (strlen($dayLeft) - 1));
@@ -51,7 +51,7 @@ if (!$user) {
         );
     }
     else {
-        $text    = "Доступ запрещен";
+        $text    = "Access denied";
         $content = render(TEMPLATE . "error", ["text" => $text]);
     }
 }

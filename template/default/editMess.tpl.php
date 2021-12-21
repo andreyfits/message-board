@@ -5,7 +5,7 @@
 <?php endif; ?>
 <?php if (is_array($text)): ?>
 <?php if ($text['is_actual'] == 0): ?>
-    <p class="not_confirm"><strong>Не актуально</strong></p>
+    <p class="not_confirm"><strong>Not actual</strong></p>
 <?php endif; ?>
 <form method='POST' enctype="multipart/form-data">
     Тема:<br>

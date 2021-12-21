@@ -16,7 +16,7 @@ if (isset($_GET['logout'])) {
     $msg = logout();
 
     if ($msg === true) {
-        $_SESSION['msg'] = "Вы вышли из системы";
+        $_SESSION['msg'] = "You are logged out";
 
         header("Location:" . $_SERVER['PHP_SELF']);
         exit();

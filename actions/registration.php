@@ -5,7 +5,7 @@ if ($_GET['hash']) {
     $confirmMessage = confirm();
 
     if ($confirmMessage === true) {
-        $_SESSION['msg'] = "Ваша учетная запись активирована. Можете авторизоваться на сайте.";
+        $_SESSION['msg'] = "Your account is activated. You can log in on the site.";
         header("Location:" . $_SERVER['PHP_SELF']);
         exit();
     }
@@ -20,8 +20,8 @@ if (isset($_POST['reg'])) {
     $msg = registration($_POST);
 
     if ($msg === true) {
-        $_SESSION['msg'] = "Вы успешно зарегистрировались на сайте. И для подтверждения регистрации Вам на почту"
-            . " отправлено письмо с инструкциями.";
+        $_SESSION['msg'] = "You have successfully registered on the site. And to confirm registration, a letter with"
+            . " instructions has been sent to your email.";
     } else {
         $_SESSION['msg'] = $msg;
     }

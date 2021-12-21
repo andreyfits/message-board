@@ -77,7 +77,7 @@ function registration($post)
             $_SESSION['reg']['email'] = $email;
             $_SESSION['reg']['name']  = $name;
 
-            return "Пользователь с таким логином уже существует";
+            return "A user with this username already exists";
         }
 
         $password = md5($password);
@@ -102,7 +102,7 @@ function registration($post)
             $_SESSION['reg']['email'] = $email;
             $_SESSION['reg']['name'] = $name;
 
-            return "Ошибка при добавлении пользователя в базу данных " . mysqli_error($db);
+            return "Error when adding a user to the database " . mysqli_error($db);
         }
 
         $headers = "From: Admin <admin@mail.ru> \r\n";
@@ -110,7 +110,7 @@ function registration($post)
 
         $subject = "registration";
 
-        $mail_body = "Спасибо за регистрацию на сайте. Ваша ссылка для подтверждения  учетной записи: " . SITE_NAME .
+        $mail_body = "Thank you for registering on the site. Your account confirmation link: " . SITE_NAME .
             "?action=registration&hash=" . $hash;
 
         mail($email, $subject, $mail_body, $headers);
@@ -122,7 +122,7 @@ function registration($post)
     $_SESSION['reg']['email'] = $email;
     $_SESSION['reg']['name']  = $name;
 
-    return "Вы не правильно подтвердили пароль";
+    return "You have incorrectly confirmed the password";
 }
 
 function confirm()
@@ -144,7 +144,7 @@ function confirm()
         return true;
     }
 
-    return "Неверный код подтверждения регистрации или учетная запись уже была активирована";
+    return "Invalid registration confirmation code or the account has already been activated";
 }
 
 function login($post)
@@ -156,7 +156,7 @@ function login($post)
     }
 
     if (empty($post['login']) || empty($post['password'])) {
-        return "Заполните поля";
+        return "Fill in the fields";
     }
 
     $login    = clearStr($post['login']);
@@ -168,11 +168,11 @@ function login($post)
     $result = mysqli_query($db, $query);
 
     if (!$result || mysqli_num_rows($result) < 1) {
-        return "Неправильный логин или пароль";
+        return "Incorrect login or password";
     }
 
     if(mysqli_fetch_assoc($result)['confirm'] == 0) {
-        return "Пользователь с таким логином еще не подтвержден";
+        return "The user with this username hasn't yet been confirmed";
     }
 
     $sess = md5(microtime());
@@ -181,7 +181,7 @@ function login($post)
     $queryUpdate = sprintf($queryUpdate, mysqli_real_escape_string($db, $login));
 
     if (!mysqli_query($db, $queryUpdate)) {
-        return "Ошибка авторизации пользователя";
+        return "User authorization error";
     }
 
     $_SESSION['sess'] = $sess;
@@ -279,7 +279,7 @@ function getPassword($email)
     $result = mysqli_query($db, $query);
 
     if (!$result) {
-        return "Невозможно сгенерировать новый пароль";
+        return "Unable to generate a new password";
     }
 
     if (mysqli_num_rows($result) === 1) {
@@ -308,21 +308,21 @@ function getPassword($email)
         $result2 = mysqli_query($db, $query);
 
         if (!$result2) {
-            return "Не возможно сгенерировать новый пароль";
+            return "Unable to generate a new password";
         }
 
         $headers = "From: Admin <admin@mail.ru> \r\n";
         $headers .= "Content-Type: text/plain; charset=utf8";
 
         $subject = 'new password';
-        $mail_body = "Ваш новый пароль: " . $pass;
+        $mail_body = "Your new password: " . $pass;
 
         mail($email, $subject, $mail_body, $headers);
 
         return true;
     }
 
-    return "Пользователя с таким почтовым ящиком нет";
+    return "There is no user with such an email";
 }
 
 function can($id, $privilegesAdm): bool
@@ -1083,7 +1083,7 @@ function editMess($post, $userId)
         }
 
         if (mysqli_affected_rows($db) < 1) {
-            $msg = "Данные не обновлены";
+            $msg = "Data not updated";
         }
     }
 
@@ -1142,7 +1142,7 @@ function editMess($post, $userId)
             }
 
             if (mysqli_affected_rows($db) < 1) {
-                $msg = "Не обновлены дополнительные изображения";
+                $msg = "Additional images have not been updated";
             } else {
                 return true;
             }
@@ -1153,5 +1153,24 @@ function editMess($post, $userId)
         return true;
     } else {
         return $msg;
+    }
+}
+
+function deleteMess($idMess)
+{
+    global $db;
+
+    if (!$db instanceof mysqli) {
+        $db = connectDb();
+    }
+
+    $query = "DELETE FROM " . PREF . "post WHERE id='$idMess'";
+
+    $result = mysqli_query($db, $query);
+
+    if ($result) {
+        return true;
+    } else {
+        return mysqli_error($db);
     }
 }

@@ -4,7 +4,7 @@ if(isset($_POST['email'])) {
     $msg = getPassword($_POST['email']);
 
     if($msg === true) {
-        $_SESSION['msg'] = "Новый пароль выслан Вам на почту";
+        $_SESSION['msg'] = "A new password has been sent to your email";
         header("Location:login.php");
     }
     else {
